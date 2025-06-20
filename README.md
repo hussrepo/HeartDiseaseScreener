@@ -6,7 +6,7 @@ an individual having heart disease with ~90% accuracy.
 **NOT INTENDED FOR MEDICAL USAGE**
 
 ## Technology Stack:
-- Python
+- Python (Libraries: scikit-learn, pandas)
 - Machine Learning
 
 ## Note:
