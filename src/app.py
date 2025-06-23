@@ -94,7 +94,7 @@ def trainingDataInfo():
     for i in range(3):
         imagePath = getPath(f"datavisualization/{imgFiles[i]}")
         image = Image.open(imagePath)
-        image = image.resize((350, 350), Image.Resampling.LANCZOS)
+        image = image.resize((450, 350), Image.Resampling.LANCZOS)
         imagetk = ImageTk.PhotoImage(image)
         imgRef.append(imagetk)
         imagelabel = tki.Label(visualWindow, image=imagetk, bg="#36454F")
