@@ -25,25 +25,25 @@ heartDiseaseModel_accuracy = heartDiseaseModel_data["heartDiseaseModel_accuracy"
 
 #Define Inputs in Human Readable/Understandable way
 variables = {
-    "age": ("Age", "(EX: 24)"),
-    "sex": ("Sex", "(1 = Male, 0 = Female)"),
-    "cp": ("Chest Pain Type", "(1 = Typical Angina, 2 = Atypical Angina, 3 = Non-anginal, 4 = Asymptomatic)"),
-    "restbps": ("Resting Blood Pressure (Systolic)", "(EX: 120)"),
-    "chol": ("Serum Cholesterol (mg/dl)", "(EX: 212)"),
-    "fbs": ("Fasting Blood Sugar > 120 mg/dl", "(1 = True, 0 = False)"),
-    "restecg": ("Resting ECG Result", "(0 = Normal, 1 = ST-T Wave Abnormality, 2 = Probable or Definite Left Ventricular Hypertrophy)"),
-    "maxhr": ("Maximum Measured Heart Rate", "(EX: 150)"),
-    "exang": ("Exercise Induced Angina", "(1 = True, 0 = False)"),
-    "stdep": ("ST Depression Induced by Exercise (Decimal)", "(EX: 0.5), 0 = None"),
-    "slope": ("Slope of the Peak Exercise ST Segment", "(1 = Upsloping, 2 = Flat, 3 = Downsloping), (No ST Dep. = 1)"),
-    "ca": ("Number of Major Vessels Colored by Fluoroscopy (0-3)", "(EX: 1), 0 = None"),
-    "thal": ("Thalassemia Test Result", "(3 = Normal, 6 = Fixed Defect, 7 = Reversible Defect)"),
+    "age": ("Age", "e.g., 24"),
+    "sex": ("Sex", "1 = Male, 0 = Female"),
+    "cp": ("Chest Pain Type", "1 = Typical Angina, 2 = Atypical Angina, 3 = Non-anginal, 4 = Asymptomatic"),
+    "restbps": ("Resting Blood Pressure (Systolic)", "e.g., 120 mmHg"),
+    "chol": ("Serum Cholesterol", "e.g., 212 mg/dL"),
+    "fbs": ("Fasting Blood Sugar > 120 mg/dL", "1 = Yes, 0 = No"),
+    "restecg": ("Resting ECG Result", "0 = Normal, 1 = ST-T Abnormality, 2 = LV Hypertrophy"),
+    "maxhr": ("Maximum Heart Rate Achieved", "e.g., 150 bpm"),
+    "exang": ("Exercise Induced Angina", "1 = Yes, 0 = No"),
+    "stdep": ("ST Depression (Exercise)", "e.g., 0.5; 0 = None"),
+    "slope": ("Slope of Peak Exercise ST Segment", "1 = Upsloping, 2 = Flat, 3 = Downsloping"),
+    "ca": ("Major Vessels Colored by Fluoroscopy", "0–3; e.g., 1; 0 = None"),
+    "thal": ("Thalassemia Test Result", "3 = Normal, 6 = Fixed Defect, 7 = Reversible Defect"),
 }
 
 #GUI
 app = tki.Tk()
 app.title("Heart Disease Screener")
-app.geometry("1000x600")
+app.geometry("800x625")
 app.configure(bg="#36454F")
 inputs = {}
 
@@ -79,29 +79,63 @@ def showAccuracy():
 
 #Display Training Data Information Function
 def trainingDataInfo():
-    #Create Graphical Window
+    # Create Graphical Window
     global visualWindow
     visualWindow = tki.Toplevel(app)
     visualWindow.title("Model Training Information")
-    visualWindow.configure(bg="#36454F")
-    visualWindow.geometry=("700x500")
+    visualWindow.configure(bg="#23272F")
+    visualWindow.geometry("1150x500")
     visualWindow.resizable(True, True)
-    #Display Text
-    tki.Label(visualWindow, text="Training Data Visualizations", font=("Arial", 18, "bold"), bg="#36454F", fg="red").grid(row=0, column=0, columnspan=3, pady=20, padx=20)
-    #Load Images
+
+    # Header Frame for Title
+    header_frame = tki.Frame(visualWindow, bg="#23272F")
+    header_frame.pack(fill="x", pady=(20, 10))
+    tki.Label(
+        header_frame,
+        text="Training Data Visualizations",
+        font=("Segoe UI", 22, "bold"),
+        bg="#23272F",
+        fg="#FF5252",
+        pady=8
+    ).pack()
+    tki.Label(
+        header_frame,
+        text="Visual insights from the model's training dataset",
+        font=("Segoe UI", 12, "italic"),
+        bg="#23272F",
+        fg="#FFD369"
+    ).pack()
+
+    # Main Content Frame
+    content_frame = tki.Frame(visualWindow, bg="#23272F")
+    content_frame.pack(expand=True, fill="both", padx=30, pady=10)
+
+    # Load and display images in a grid with padding and border
     imgRef = []
     imgFiles = ["cholheartdis.png", "datasexratio.png", "maxhrfreq.png"]
-    for i in range(3):
-        imagePath = getPath(f"datavisualization/{imgFiles[i]}")
+    captions = \
+        [
+        "Cholesterol vs Heart Disease",
+        "Sex Ratio in Dataset",
+        "Max Heart Rate Frequency"
+        ]
+    for i, imgFile in enumerate(imgFiles):
+        imagePath = getPath(f"datavisualization/{imgFile}")
         image = Image.open(imagePath)
-        image = image.resize((450, 350), Image.Resampling.LANCZOS)
+        image = image.resize((320, 240), Image.Resampling.LANCZOS)
         imagetk = ImageTk.PhotoImage(image)
         imgRef.append(imagetk)
-        imagelabel = tki.Label(visualWindow, image=imagetk, bg="#36454F")
-        imagelabel.grid(row=(i//3) + 1, column=i%3, padx=10, pady=10)
-    visualWindow.imgRef = imgRef
-    tki.Button(visualWindow, text="Import Model Accuracy", width=25, height=1, font=("Arial", 12, "bold"), command=showAccuracy, bg="blue", fg="white").grid(row=2, column=1,pady=20)
+        img_frame = tki.Frame(content_frame, bg="#393E46", bd=2, relief="ridge")
+        img_frame.grid(row=0, column=i, padx=18, pady=8)
+        tki.Label(img_frame, image=imagetk, bg="#393E46").pack()
+        tki.Label(img_frame, text=captions[i], font=("Segoe UI", 10, "italic"), bg="#393E46", fg="#FFD369").pack(pady=(6, 2))
 
+    visualWindow.imgRef = imgRef
+
+    # Button Frame
+    button_frame = tki.Frame(visualWindow, bg="#23272F")
+    button_frame.pack(pady=(10, 20))
+    tki.Button(button_frame, text="Show Model Accuracy", width=25, height=1, font=("Segoe UI", 12, "bold"), command=showAccuracy, bg="#0074D9", fg="white", activebackground="#005fa3", activeforeground="#FFD369", bd=0, relief="ridge").pack()
 
 
 #Input Fields Font Style
@@ -109,11 +143,16 @@ headers = ("Arial", 12, "bold")
 labels = ("Arial", 10, "bold")
 notes = ("Arial", 8)
 
-#App Headers
-appHeader = tki.Label(app, text="Heart Disease Screener", font=("Arial", 18, "bold"), bg="#36454F", fg="red")
-appHeader.grid(row=0, column=0, columnspan=3, pady=(10, 0))
-appSubHeader = tki.Label(app, text="Not Intended for Medical Usage\ngithub.com/hussrepo", font=labels, bg="#36454F", fg="red")
-appSubHeader.grid(row=1, column=0, columnspan=3, pady=(0, 10))
+# App Headers - Improved Appearance/Alignment
+header_frame = tki.Frame(app, bg="#23272F", bd=3, relief="groove", highlightbackground="#393E46", highlightthickness=2)
+header_frame.grid(row=0, column=0, columnspan=3, pady=(20, 10), padx=30, sticky="ew")
+
+appHeader = tki.Label(header_frame, text="❤ Heart Disease Screener ❤", font=("Segoe UI", 26, "bold"), bg="#23272F", fg="#FF5252", pady=0, anchor="center", justify="center", bd=0, highlightthickness=0)
+appHeader.pack(fill="x")
+
+appSubHeader = tki.Label(header_frame, text="Not Intended for Medical Usage\ngithub.com/hussrepo", font=("Segoe UI", 11, "italic"), bg="#23272F", fg="#FFD369", pady=0, anchor="center", justify="center", bd=0, highlightthickness=0)
+appSubHeader.pack(fill="x")
+
 
 #Input Fields
 for i, (variable, (label, note)) in enumerate(variables.items(), start=2):
@@ -127,6 +166,6 @@ for i, (variable, (label, note)) in enumerate(variables.items(), start=2):
     tki.Label(app, text=note, font=notes, fg="white", bg="#36454F").grid(row=i, column=2, sticky="w")
 
 #Calculate Button
-tki.Button(app, text="Calculate Probability", command=prediction, font=headers, bg="red", fg="white", padx=10).grid(row=len(variables) + 2, column=0, columnspan=3, pady=20)
-tki.Button(app, text="Show Model Training Information", command=trainingDataInfo, font=headers, bg="blue", fg="white", padx=10).grid(row=len(variables) + 3, column=0, columnspan=3, pady=0)
+tki.Button(app, text="Calculate Probability", command=prediction, font=("Segoe UI", 12, "bold"), bg="#FF5252", fg="white", activebackground="#005fa3", activeforeground="#FFD369", bd=0, relief="ridge", padx=10, width=25, height=1).grid(row=len(variables) + 2, column=0, columnspan=3, pady=15)
+tki.Button(app, text="Model Training Information", command=trainingDataInfo, font=("Segoe UI", 12, "bold"), bg="#0074D9", fg="white", activebackground="#005fa3", activeforeground="#FFD369", bd=0, relief="ridge", padx=10, width=25, height=1).grid(row=len(variables) + 3, column=0, columnspan=3, pady=0)
 app.mainloop()
