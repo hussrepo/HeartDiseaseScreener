@@ -166,6 +166,6 @@ for i, (variable, (label, note)) in enumerate(variables.items(), start=2):
     tki.Label(app, text=note, font=notes, fg="white", bg="#36454F").grid(row=i, column=2, sticky="w")
 
 #Calculate Button
-tki.Button(app, text="Calculate Probability", command=prediction, font=("Segoe UI", 12, "bold"), bg="#FF5252", fg="white", activebackground="#005fa3", activeforeground="#FFD369", bd=0, relief="ridge", padx=10, width=25, height=1).grid(row=len(variables) + 2, column=0, columnspan=3, pady=15)
+tki.Button(app, text="Calculate Risk", command=prediction, font=("Segoe UI", 12, "bold"), bg="#FF5252", fg="white", activebackground="#005fa3", activeforeground="#FFD369", bd=0, relief="ridge", padx=10, width=25, height=1).grid(row=len(variables) + 2, column=0, columnspan=3, pady=15)
 tki.Button(app, text="Model Training Information", command=trainingDataInfo, font=("Segoe UI", 12, "bold"), bg="#0074D9", fg="white", activebackground="#005fa3", activeforeground="#FFD369", bd=0, relief="ridge", padx=10, width=25, height=1).grid(row=len(variables) + 3, column=0, columnspan=3, pady=0)
 app.mainloop()
